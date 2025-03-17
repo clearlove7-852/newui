@@ -1,0 +1,1980 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CarbonLiner App 原型</title>
+    <style>
+        :root {
+            --primary-color: #4CAF50;
+            --secondary-color: #2E7D32;
+            --accent-color: #8BC34A;
+            --light-gray: #f5f5f5;
+            --dark-gray: #333;
+            --medium-gray: #777;
+            --white: #fff;
+            --border-radius: 12px;
+            --shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+        
+        body {
+            background-color: #f0f0f0;
+            padding: 40px;
+            min-height: 100vh;
+        }
+        
+        .prototype-title {
+            text-align: center;
+            margin-bottom: 40px;
+            color: var(--dark-gray);
+            font-size: 28px;
+            font-weight: 700;
+        }
+        
+        .prototype-description {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 40px;
+            color: var(--medium-gray);
+            line-height: 1.6;
+        }
+        
+        .screens-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 40px;
+            margin: 0 auto;
+            max-width: 1400px;
+        }
+        
+        .screen-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .screen-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--dark-gray);
+        }
+        
+        .screen {
+            width: 390px; /* iPhone 15 width */
+            height: 844px; /* iPhone 15 height */
+            background-color: var(--white);
+            border-radius: 40px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: var(--shadow);
+        }
+        
+        .status-bar {
+            height: 44px;
+            width: 100%;
+            background-color: var(--white);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            position: absolute;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .status-bar .time {
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .status-bar .indicators {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .status-bar .indicators div {
+            width: 18px;
+            height: 18px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .nav-bar {
+            height: 83px;
+            width: 100%;
+            background-color: var(--white);
+            position: absolute;
+            bottom: 0;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border-top: 1px solid rgba(0,0,0,0.1);
+            padding-bottom: 20px;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .nav-icon {
+            width: 26px;
+            height: 26px;
+            background-color: var(--medium-gray);
+            border-radius: 50%;
+        }
+        
+        .nav-icon.active {
+            background-color: var(--primary-color);
+        }
+        
+        .nav-label {
+            font-size: 10px;
+            color: var(--medium-gray);
+        }
+        
+        .nav-label.active {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        .header {
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 44px;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--dark-gray);
+        }
+        
+        .content {
+            padding: 0 20px;
+            height: calc(100% - 127px - 44px);
+            overflow-y: auto;
+            padding-bottom: 20px;
+        }
+        
+        .carbon-stats {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: var(--border-radius);
+            padding: 20px;
+            color: var(--white);
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+        }
+        
+        .stats-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .stats-header h2 {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .carbon-value {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .carbon-label {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        
+        .token-value {
+            background-color: rgba(255,255,255,0.2);
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .token-icon {
+            width: 18px;
+            height: 18px;
+            background-color: var(--white);
+            border-radius: 50%;
+        }
+        
+        .section {
+            margin-bottom: 25px;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--dark-gray);
+        }
+        
+        .see-all {
+            font-size: 14px;
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+        
+        .challenge-card {
+            background-color: var(--white);
+            border-radius: var(--border-radius);
+            padding: 16px;
+            box-shadow: var(--shadow);
+            margin-bottom: 15px;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .challenge-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .challenge-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--dark-gray);
+        }
+        
+        .challenge-reward {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .challenge-desc {
+            font-size: 14px;
+            color: var(--medium-gray);
+            margin-bottom: 12px;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background-color: var(--light-gray);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background-color: var(--primary-color);
+            border-radius: 4px;
+        }
+        
+        .progress-text {
+            font-size: 12px;
+            color: var(--medium-gray);
+            text-align: right;
+        }
+        
+        .activities-list {
+            display: flex;
+            overflow-x: auto;
+            gap: 12px;
+            padding-bottom: 10px;
+            scrollbar-width: none;
+        }
+        
+        .activities-list::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .activity-card {
+            min-width: 140px;
+            background-color: var(--white);
+            border-radius: var(--border-radius);
+            padding: 15px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            background-color: var(--light-gray);
+            border-radius: 50%;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .activity-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--dark-gray);
+            margin-bottom: 5px;
+        }
+        
+        .activity-carbon {
+            font-size: 12px;
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+        
+        .community-preview {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .post-card {
+            background-color: var(--white);
+            border-radius: var(--border-radius);
+            padding: 15px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .post-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background-color: var(--light-gray);
+            border-radius: 50%;
+        }
+        
+        .post-user-info {
+            flex: 1;
+        }
+        
+        .user-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--dark-gray);
+        }
+        
+        .post-time {
+            font-size: 12px;
+            color: var(--medium-gray);
+        }
+        
+        .post-content {
+            font-size: 14px;
+            color: var(--dark-gray);
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+        
+        .post-image {
+            width: 100%;
+            height: 180px;
+            background-color: var(--light-gray);
+            border-radius: var(--border-radius);
+            margin-bottom: 15px;
+            position: relative;
+        }
+        
+        .post-image::after {
+            content: '📷';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 40px;
+        }
+        
+        .post-actions {
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .action-button {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--medium-gray);
+            font-size: 12px;
+        }
+        
+        .action-icon {
+            width: 16px;
+            height: 16px;
+            background-color: var(--medium-gray);
+            border-radius: 50%;
+        }
+        
+        /* Profile Screen */
+        .profile-header {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            background-color: var(--white);
+            margin-top: 44px;
+        }
+        
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            background-color: var(--light-gray);
+            border-radius: 50%;
+            position: relative;
+        }
+        
+        .profile-avatar::after {
+            content: '👤';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 50px;
+        }
+        
+        .profile-name {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--dark-gray);
+        }
+        
+        .profile-bio {
+            font-size: 14px;
+            color: var(--medium-gray);
+            text-align: center;
+            max-width: 300px;
+        }
+        
+        .profile-stats {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--dark-gray);
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: var(--medium-gray);
+        }
+        
+        .profile-badges {
+            padding: 0 20px;
+            margin-top: 15px;
+        }
+        
+        .badges-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+        
+        .badge-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .badge-icon {
+            width: 60px;
+            height: 60px;
+            background-color: var(--light-gray);
+            border-radius: 12px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .badge-name {
+            font-size: 10px;
+            color: var(--medium-gray);
+            text-align: center;
+        }
+        
+        /* Challenges Screen */
+        .challenges-tabs {
+            display: flex;
+            margin-bottom: 15px;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+        
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 12px 0;
+            font-size: 14px;
+            color: var(--medium-gray);
+            font-weight: 500;
+        }
+        
+        .tab.active {
+            color: var(--primary-color);
+            font-weight: 600;
+            border-bottom: 2px solid var(--primary-color);
+        }
+        
+        /* Community Screen */
+        .community-tabs {
+            display: flex;
+            margin-bottom: 15px;
+            background-color: var(--light-gray);
+            border-radius: 8px;
+            padding: 4px;
+        }
+        
+        .community-tab {
+            flex: 1;
+            text-align: center;
+            padding: 8px 0;
+            font-size: 14px;
+            color: var(--medium-gray);
+            font-weight: 500;
+            border-radius: 6px;
+        }
+        
+        .community-tab.active {
+            background-color: var(--white);
+            color: var(--primary-color);
+            font-weight: 600;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background-color: var(--light-gray);
+            border-radius: 8px;
+            padding: 10px 15px;
+            margin-bottom: 15px;
+        }
+        
+        .search-icon {
+            width: 16px;
+            height: 16px;
+            background-color: var(--medium-gray);
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .search-input {
+            border: none;
+            background: none;
+            font-size: 14px;
+            color: var(--medium-gray);
+            flex: 1;
+        }
+        
+        /* Market Screen */
+        .market-categories {
+            display: flex;
+            overflow-x: auto;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding-bottom: 5px;
+            scrollbar-width: none;
+        }
+        
+        .market-categories::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .category-chip {
+            padding: 8px 15px;
+            background-color: var(--light-gray);
+            border-radius: 20px;
+            font-size: 14px;
+            color: var(--medium-gray);
+            white-space: nowrap;
+        }
+        
+        .category-chip.active {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+        
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        
+        .product-card {
+            background-color: var(--white);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+        
+        .product-image {
+            width: 100%;
+            height: 120px;
+            background-color: var(--light-gray);
+            position: relative;
+        }
+        
+        .product-image::after {
+            content: '🛍️';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 40px;
+        }
+        
+        .product-info {
+            padding: 12px;
+        }
+        
+        .product-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--dark-gray);
+            margin-bottom: 5px;
+        }
+        
+        .product-price {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 14px;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        .screen-content {
+            height: calc(100% - 127px);
+            overflow-y: auto;
+            margin-top: 44px;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .button {
+            padding: 12px 20px;
+            background-color: var(--primary-color);
+            color: var(--white);
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            text-align: center;
+            flex: 1;
+        }
+        
+        .button.outline {
+            background-color: transparent;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+        
+        .eco-icon {
+            font-size: 24px;
+            line-height: 1;
+        }
+        
+        /* Onboarding Screen */
+        .onboarding-screen {
+            background: linear-gradient(135deg, #a8e063, #56ab2f);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 30px;
+            position: relative;
+        }
+        
+        .onboarding-logo {
+            width: 120px;
+            height: 120px;
+            background-color: var(--white);
+            border-radius: 30px;
+            margin-bottom: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: var(--shadow);
+        }
+        
+        .onboarding-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--white);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .onboarding-desc {
+            font-size: 18px;
+            color: var(--white);
+            text-align: center;
+            margin-bottom: 60px;
+            line-height: 1.5;
+            opacity: 0.9;
+        }
+        
+        .onboarding-features {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            margin-bottom: 60px;
+            width: 100%;
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .feature-icon {
+            width: 50px;
+            height: 50px;
+            background-color: rgba(255,255,255,0.2);
+            border-radius: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+        }
+        
+        .feature-text {
+            flex: 1;
+            color: var(--white);
+            font-size: 16px;
+            font-weight: 500;
+        }
+        
+        .onboarding-buttons {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: auto;
+        }
+        
+        .onboarding-button {
+            padding: 15px 20px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            text-align: center;
+            width: 100%;
+        }
+        
+        .onboarding-button.primary {
+            background-color: var(--white);
+            color: var(--primary-color);
+        }
+        
+        .onboarding-button.secondary {
+            background-color: transparent;
+            border: 2px solid var(--white);
+            color: var(--white);
+        }
+        
+        /* Dashboard Screen */
+        .dashboard-content {
+            position: relative;
+        }
+        
+        .carbon-chart {
+            width: 100%;
+            height: 220px;
+            background-color: var(--light-gray);
+            border-radius: var(--border-radius);
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .chart-bar {
+            position: absolute;
+            bottom: 0;
+            width: 30px;
+            background-color: var(--primary-color);
+            border-radius: 5px 5px 0 0;
+        }
+        
+        .chart-bar:nth-child(1) {
+            height: 60%;
+            left: 30px;
+        }
+        
+        .chart-bar:nth-child(2) {
+            height: 40%;
+            left: 80px;
+        }
+        
+        .chart-bar:nth-child(3) {
+            height: 70%;
+            left: 130px;
+        }
+        
+        .chart-bar:nth-child(4) {
+            height: 55%;
+            left: 180px;
+        }
+        
+        .chart-bar:nth-child(5) {
+            height: 80%;
+            left: 230px;
+        }
+        
+        .chart-bar:nth-child(6) {
+            height: 50%;
+            left: 280px;
+        }
+        
+        .chart-bar:nth-child(7) {
+            height: 65%;
+            left: 330px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .stat-card {
+            background-color: var(--white);
+            border-radius: var(--border-radius);
+            padding: 15px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .stat-card-label {
+            font-size: 14px;
+            color: var(--medium-gray);
+        }
+        
+        .stat-card-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--dark-gray);
+        }
+        
+        .stat-card-change {
+            font-size: 12px;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+        
+        /* Carbon NFT Screen */
+        .nft-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .nft-card {
+            background-color: var(--white);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+        
+        .nft-image {
+            width: 100%;
+            height: 150px;
+            background: linear-gradient(45deg, #43cea2, #185a9d);
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .nft-image::after {
+            content: '🌱';
+            font-size: 40px;
+        }
+        
+        .nft-info {
+            padding: 15px;
+        }
+        
+        .nft-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--dark-gray);
+            margin-bottom: 5px;
+        }
+        
+        .nft-details {
+            font-size: 12px;
+            color: var(--medium-gray);
+            margin-bottom: 10px;
+        }
+        
+        .nft-carbon {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .crypto-banner {
+            background: linear-gradient(135deg, #2c3e50, #4ca1af);
+            border-radius: var(--border-radius);
+            padding: 15px;
+            color: var(--white);
+            margin-bottom: 20px;
+        }
+        
+        .crypto-banner-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .crypto-banner-text {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+        
+        .banner-button {
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--white);
+            align-self: flex-start;
+            display: inline-block;
+        }
+        
+        /* Icons */
+        .bike-icon::after {
+            content: '🚲';
+        }
+        
+        .recycle-icon::after {
+            content: '♻️';
+        }
+        
+        .water-icon::after {
+            content: '💧';
+        }
+        
+        .badge-icon-1::after {
+            content: '🏆';
+        }
+        
+        .badge-icon-2::after {
+            content: '🚲';
+        }
+        
+        .badge-icon-3::after {
+            content: '💧';
+        }
+        
+        .badge-icon-4::after {
+            content: '♻️';
+        }
+        
+        .like-icon::after {
+            content: '👍';
+            font-size: 10px;
+        }
+        
+        .comment-icon::after {
+            content: '💬';
+            font-size: 10px;
+        }
+        
+        .share-icon::after {
+            content: '↗️';
+            font-size: 10px;
+        }
+        
+        .wallet-icon::after {
+            content: '👛';
+        }
+        
+        .notification-icon::after {
+            content: '🔔';
+        }
+    </style>
+</head>
+<body>
+    <h1 class="prototype-title">CarbonLiner App 原型设计</h1>
+    <p class="prototype-description">CarbonLiner是一款基于区块链技术的低碳生活应用，通过社交激励机制鼓励用户参与环保行动。该应用结合碳排放追踪、区块链奖励和社区互动，为用户提供全方位的低碳生活解决方案。</p>
+    
+    <div class="screens-container">
+        <!-- Onboarding Screen -->
+        <div class="screen-wrapper">
+            <div class="screen-title">引导页</div>
+            <div class="screen">
+                <div class="status-bar">
+                    <div class="time">12:30</div>
+                    <div class="indicators">
+                        <div class="signal"></div>
+                        <div class="wifi"></div>
+                        <div class="battery"></div>
+                    </div>
+                </div>
+                
+                <div class="onboarding-screen">
+                    <div class="onboarding-logo">
+                        <div style="font-size: 60px;">🌿</div>
+                    </div>
+                    
+                    <h1 class="onboarding-title">欢迎使用<br>CarbonLiner</h1>
+                    <p class="onboarding-desc">共建低碳未来，用区块链技术记录您的环保贡献</p>
+                    
+                    <div class="onboarding-features">
+                        <div class="feature-item">
+                            <div class="feature-icon">🌱</div>
+                            <div class="feature-text">记录和减少您的碳足迹</div>
+                        </div>
+                        
+                        <div class="feature-item">
+                            <div class="feature-icon">🪙</div>
+                            <div class="feature-text">获得低碳行为的碳币奖励</div>
+                        </div>
+                        
+                        <div class="feature-item">
+                            <div class="feature-icon">👥</div>
+                            <div class="feature-text">加入环保社区，分享低碳生活</div>
+                        </div>
+                    </div>
+                    
+                    <div class="onboarding-buttons">
+                        <div class="onboarding-button primary">开始低碳之旅</div>
+                        <div class="onboarding-button secondary">已有账号？登录</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Home Screen -->
+        <div class="screen-wrapper">
+            <div class="screen-title">首页</div>
+            <div class="screen">
+                <div class="status-bar">
+                    <div class="time">12:30</div>
+                    <div class="indicators">
+                        <div class="signal"></div>
+                        <div class="wifi"></div>
+                        <div class="battery"></div>
+                    </div>
+                </div>
+                
+                <div class="header">
+                    <h1>CarbonLiner</h1>
+                    <div class="notification-icon" style="width: 24px; height: 24px; background-color: var(--medium-gray); border-radius: 50%;"></div>
+                </div>
+                
+                <div class="content">
+                    <div class="carbon-stats">
+                        <div class="stats-header">
+                            <h2>我的碳足迹</h2>
+                            <div class="token-value">
+                                <div class="token-icon"></div>
+                                <span>289 碳币</span>
+                            </div>
+                        </div>
+                        <div class="carbon-value">-12.5 kg</div>
+                        <div class="carbon-label">本月碳减排量</div>
+                    </div>
+                    
+                    <div class="section">
+                        <div class="section-header">
+                            <div class="section-title">我的挑战</div>
+                            <div class="see-all">查看全部</div>
+                        </div>
+                        
+                        <div class="challenge-card">
+                            <div class="challenge-header">
+                                <div class="challenge-title">骑行出行</div>
+                                <div class="challenge-reward">
+                                    <div class="token-icon" style="width: 14px; height: 14px;"></div>
+                                    <span>+50 碳币</span>
+                                </div>
+                            </div>
+                            <div class="challenge-desc">每周累计骑行50公里，减少碳排放并获得健康</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 70%;"></div>
+                            </div>
+                            <div class="progress-text">35/50 公里</div>
+                        </div>
+                        
+                        <div class="challenge-card">
+                            <div class="challenge-header">
+                                <div class="challenge-title">无纸化生活</div>
+                                <div class="challenge-reward">
+                                    <div class="token-icon" style="width: 14px; height: 14px;"></div>
+                                    <span>+30 碳币</span>
+                                </div>
+                            </div>
+                            <div class="challenge-desc">连续30天使用电子票据，拒绝纸质单据</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 40%;"></div>
+                            </div>
+                            <div class="progress-text">12/30 天</div>
+                        </div>
+                    </div>
+                    
+                    <div class="section">
+                        <div class="section-header">
+                            <div class="section-title">低碳活动</div>
+                            <div class="see-all">更多</div>
+                        </div>
+                        
+                        <div class="activities-list">
+                            <div class="activity-card">
+                                <div class="activity-icon bike-icon"></div>
+                                <div class="activity-title">绿色出行</div>
+                                <div class="activity-carbon">-0.5kg CO₂ / 次</div>
+                            </div>
+                            
+                            <div class="activity-card">
+                                <div class="activity-icon recycle-icon"></div>
+                                <div class="activity-title">分类回收</div>
+                                <div class="activity-carbon">-0.3kg CO₂ / 次</div>
+                            </div>
+                            
+                            <div class="activity-card">
+                                <div class="activity-icon water-icon"></div>
+                                <div class="activity-title">节水节电</div>
+                                <div class="activity-carbon">-0.2kg CO₂ / 天</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="section">
+                        <div class="section-header">
+                            <div class="section-title">社区动态</div>
+                            <div class="see-all">查看全部</div>
+                        </div>
+                        
+                        <div class="community-preview">
+                            <div class="post-card">
+                                <div class="post-header">
+                                    <div class="user-avatar"></div>
+                                    <div class="post-user-info">
+                                        <div class="user-name">环保达人</div>
+                                        <div class="post-time">1小时前</div>
+                                    </div>
+                                </div>
+                                <div class="post-content">今天骑行上班，不仅减少了碳排放，还锻炼了身体，一举两得！#绿色出行挑战#</div>
+                                <div class="post-image"></div>
+                                <div class="post-actions">
+                                    <div class="action-button">
+                                        <div class="action-icon like-icon"></div>
+                                        <span>45 赞</span>
+                                    </div>
+                                    <div class="action-button">
+                                        <div class="action-icon comment-icon"></div>
+                                        <span>12 评论</span>
+                                    </div>
+                                    <div class="action-button">
+                                        <div class="action-icon share-icon"></div>
+                                        <span>分享</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="nav-bar">
+                    <div class="nav-item">
+                        <div class="nav-icon active"></div>
+                        <div class="nav-label active">首页</div>
+                    </div>
+                    <div class="nav-item">
+                        <div class="nav-icon"></div>
+                        <div class="nav-label">活动</div>
+                    </div>
+                    <div class="nav-item">
+                        <div class="nav-icon"></div>
+                        <div class="nav-label">社区</div>
+                    </div>
+                    <div class="nav-item">
+                        <div class="nav-icon"></div>
+                        <div class="nav-label">商城</div>
+                    </div>
+                    <div class="nav-item">
+                        <div class="nav-icon"></div>
+                        <div class="nav-label">我的</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Activities Screen -->
+        <div class="screen-wrapper">
+            <div class="screen-title">低碳活动</div>
+            <div class="screen">
+                <div class="status-bar">
+                    <div class="time">12:30</div>
+                    <div class="indicators">
+                        <div class="signal"></div>
+                        <div class="wifi"></div>
+                        <div class="battery"></div>
+                    </div>
+                </div>
+                
+                <div class="header">
+                    <h1>低碳活动</h1>
+                    <div class="notification-icon" style="width: 24px; height: 24px; background-color: var(--medium-gray); border-radius: 50%;"></div>
+                </div>
+                
+                <div class="content">
+                    <div class="challenges-tabs">
+                        <div class="tab active">进行中</div>
+                        <div class="tab">已完成</div>
+                        <div class="tab">发现</div>
+                    </div>
+                    
+                    <div class="section">
+                        <div class="challenge-card">
+                            <div class="challenge-header">
+                                <div class="challenge-title">骑行出行</div>
+                                <div class="challenge-reward">
+                                    <div class="token-icon" style="width: 14px; height: 14px;"></div>
+                                    <span>+50 碳币</span>
+                                </div>
+                            </div>
+                            <div class="challenge-desc">每周累计骑行50公里，减少碳排放并获得健康</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 70%;"></div>
+                            </div>
+                            <div class="progress-text">35/50 公里</div>
+                        </div>
+                        
+                        <div class="challenge-card">
+                            <div class="challenge-header">
+                                <div class="challenge-title">无纸化生活</div>
+                                <div class="challenge-reward">
+                                    <div class="token-icon" style="width: 14px; height: 14px;"></div>
+                                    <span>+30 碳币</span>
+                                </div>
+                            </div>
+                            <div class="challenge-desc">连续30天使用电子票据，拒绝纸质单据</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 40%;"></div>
+                            </div>
+                            <div class="progress-text">12/30 天</div>
+                        </div>
+                        
+                        <div class="challenge-card">
+                            <div class="challenge-header">
+                                <div class="challenge-title">节能达人</div>
+                                <div class="challenge-reward">
+                                    <div class="token-icon" style="width: 14px; height: 14px;"></div>
+                                    <span>+60 碳币</span>
+                                </div>
+                            </div>
+                            <div class="challenge-desc">每月节电达到10%，记录并验证你的电费账单</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 20%;"></div>
+                            </div>
+                            <div class="progress-text">2/10 %</div>
+                        </div>
+                        
+                        <div class="challenge-card">
+                            <div class="challenge-header">
+                                <div class="challenge-title">社区清洁</div>
+                                <div class="challenge-reward">
+                                    <div class="token-icon" style="width: 14px; height: 14px;"></div>
+                                    <span>+20 碳币</span>
+                                </div>
+                            </div>
+                            <div class="challenge-desc">参与社区清洁活动，与邻居一起创建更美好的环境</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 0%;"></div>
+                            </div>
+                            <div class="progress-text">0/1 次</div>
+                        </div>
+                    </div>
+                    
+                    <div class="section">
+                        <div class="section-header">
+                            <div class="section-title">即将开始</div>
+                        </div>
+                        
+                        <div class="challenge-card">
+                            <div class="challenge-header">
+                                <div class="challenge-title">春季植树活动</div>
+                                <div class="challenge-reward">
+                                    <div class="token-icon" style="width: 14px; height: 14px;"></div>
+                                    <span>+100 碳币</span>
+                                </div>
+                            </div>
+                            <div class="challenge-desc">与我们一起参加春季植树活动，为地球增添绿色</div>
+                            <div style="text-align: right; margin-top: 10px;">
+                                <div class="button">立即报名</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="nav-bar">
+                    <div class="nav-item">
+                        <div class="nav-icon"></div>
+                        <div class="nav-label">首页</div>
+                    </div>
+                    <div class="nav-item">
+                        <div class="nav-icon active"></div>
+                        <div class="nav-label active">活动</div>
+                    </div>
+                    <div class="nav-item">
+                        <div class="nav-icon"></div>
+                        <div class="nav-label">社区</div>
+                    </div>
+                    <div class="nav-item">
+                        <div class="nav-icon"></div>
+                        <div class="nav-label">商城</div>
+                    </div>
+                    <div class="nav-item">
+                        <div class="nav-icon"></div>
+                        <div class="nav-label">我的</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Community Screen -->
+        <div class="screen-wrapper">
+            <div class="screen-title">社区</div>
+            <div class="screen">
+                <div class="status-bar">
+                    <div class="time">12:30</div>
+                    <div class="indicators">
+                        <div class="signal"></div>
+                        <div class="wifi"></div>
+                        <div class="battery"></div>
+                    </div>
+                </div>
+                
+                <div class="header">
+                    <h1>社区</h1>
+                    <div class="notification-icon" style="width: 24px; height: 24px; background-color: var(--medium-gray); border-radius: 50%;"></div>
+                </div>
+                
+                <div class="content">
+                    <div class="community-tabs">
+                        <div class="community-tab active">推荐</div>
+                        <div class="community-tab">关注</div>
+                        <div class="community-tab">附近</div>
+                    </div>
+                    
+                    <div class="search-bar">
+                        <div class="search-icon"></div>
+                        <div class="search-input">搜索低碳话题和用户</div>
+                    </div>
+                    
+                    <div class="section">
+                        <div class="post-card">
+                            <div class="post-header">
+                                <div class="user-avatar"></div>
+                                <div class="post-user-info">
+                                    <div class="user-name">环保达人</div>
+                                    <div class="post-time">1小时前</div>
+                                </div>
+                            </div>
+                            <div class="post-content">今天骑行上班，不仅减少了碳排放，还锻炼了身体，一举两得！#绿色出行挑战#</div>
+                            <div class="post-image"></div>
+                            <div class="post-actions">
+                                <div class="action-button">
+                                    <div class="action-icon like-icon"></div>
+                                    <span>45 赞</span>
+                                </div>
+                                <div class="action-button">
+                                    <div class="action-icon comment-icon"></div>
+                                    <span>12 评论</span>
+                                </div>
+                                <div class="action-button">
+                                    <div class="action-icon share-icon"></div>
+                                    <span>分享</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="post-card">
+                            <div class="post-header">
+                                <div class="user-avatar"></div>
+                                <div class="post-user-info">
+                                    <div class="user-name">低碳生活家</div>
+                                    <div class="post-time">3小时前</div>
+                                </div>
+                            </div>
+                            <div class="post-content">分享一个简单的方法减少家庭用水：收集洗菜、洗水果的水来浇花，既环保又经济！#节水小技巧#</div>
+                            <div class="post-actions">
+                                <div class="action-button">
+                                    <div class="action-icon like-icon"></div>
+                                    <span>32 赞</span>
+                                </div>
+                                <div class="action-button">
+                                    <div class="action-icon comment-icon"></div>
+                                    <span>8 评论</span>
+                                </div>
+                                <div class="action-button">
+                                    <div class="action-icon share-icon"></div>
+                                    <span>分享</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="post-card">
+                            <div class="post-header">
+                                <div class="user-avatar"></div>
+                                <div class="post-user-info">
+                                    <div class="user-name">可持续时尚</div>
+                                    <div class="post-time">5小时前</div>
+                                </div>
+                            </div>
+                            <div class="post-content">旧衣物改造完成！这件旧T恤被我改造成了时尚的手提袋，既减少了废弃物又增加了实用性。#可持续时尚#</div>
+                            <div class="post-image"></div>
+                            <div class="post-actions">
+                                <div class="action-button">
+                                    <div class="action-icon like-icon"></div>
+                                    <span>78 赞</span>
+                                </div>
+                                <div class="action-button">
+                                    <div class="action-icon comment-icon"></div>
+                                    <span>23 评论</span>
+                                </div>
+                                <div class="action-button">
+                                    <div class="action-icon share-icon"></div>
+                                    <span>分享</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="nav-bar">
+                    <div class="nav-item">
+                        <div class="nav-icon"></div>
+                        <div class="nav-label">首页</div>
+                    </div>
+                    <div class="nav-item">
+                        <div class="nav-icon"></div>
+                        <div class="nav-label">活动</div>
+                    </div>
+                    <div class="nav-item">
+                        <div class="nav-icon active"></div>
+                        <div class="nav-label active">社区</div>
+                    </div>
+                    <div class="nav-item">
+                        <div class="nav-icon"></div>
+                        <div class="nav-label">商城</div>
+                    </div>
+                    <div class="nav-item">
+                        <div class="nav-icon"></div>
+                        <div class="nav-label">我的</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Market Screen -->
+        <div class="screen-wrapper">
+            <div class="screen-title">碳币商城</div>
+            <div class="screen">
+                <div class="status-bar">
+                    <div class="time">12:30</div>
+                    <div class="indicators">
+                        <div class="signal"></div>
+                        <div class="wifi"></div>
+                        <div class="battery"></div>
+                    </div>
+                </div>
+                
+                <div class="header">
+                    <h1>碳币商城</h1>
+                    <div style="display: flex; align-items: center; gap: 5px;">
+                        <div class="token-icon" style="width: 18px; height: 18px;"></div>
+                        <span style="font-weight: 600; color: var(--primary-color);">289</span>
+                    </div>
+                </div>
+                
+                <div class="content">
+                    <div class="market-categories">
+                        <div class="category-chip active">全部</div>
+                        <div class="category-chip">环保商品</div>
+                        <div class="category-chip">优惠券</div>
+                        <div class="category-chip">体验活动</div>
+                        <div class="category-chip">公益捐赠</div>
+                    </div>
+                    
+                    <div class="product-grid">
+                        <div class="product-card">
+                            <div class="product-image"></div>
+                            <div class="product-info">
+                                <div class="product-name">竹制餐具套装</div>
+                                <div class="product-price">
+                                    <div class="token-icon" style="width: 14px; height: 14px;"></div>
+                                    <span>120</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="product-card">
+                            <div class="product-image"></div>
+                            <div class="product-info">
+                                <div class="product-name">有机棉环保袋</div>
+                                <div class="product-price">
+                                    <div class="token-icon" style="width: 14px; height: 14px;"></div>
+                                    <span>80</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="product-card">
+                            <div class="product-image"></div>
+                            <div class="product-info">
+                                <div class="product-name">咖啡厅8折券</div>
+                                <div class="product-price">
+                                    <div class="token-icon" style="width: 14px; height: 14px;"></div>
+                                    <span>150</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="product-card">
+                            <div class="product-image"></div>
+                            <div class="product-info">
+                                <div class="product-name">植树活动名额</div>
+                                <div class="product-price">
+                                    <div class="token-icon" style="width: 14px; height: 14px;"></div>
+                                    <span>200</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="product-card">
+                            <div class="product-image"></div>
+                            <div class="product-info">
+                                <div class="product-name">太阳能充电宝</div>
+                                <div class="product-price">
+                                    <div class="token-icon" style="width: 14px; height: 14px;"></div>
+                                    <span>280</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="product-card">
+                            <div class="product-image"></div>
+                            <div class="product-info">
+                                <div class="product-name">公益植树1棵</div>
+                                <div class="product-price">
+                                    <div class="token-icon" style="width: 14px; height: 14px;"></div>
+                                    <span>100</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="nav-bar">
+                    <div class="nav-item">
+                        <div class="nav-icon"></div>
+                        <div class="nav-label">首页</div>
+                    </div>
+                    <div class="nav-item">
+                        <div class="nav-icon"></div>
+                        <div class="nav-label">活动</div>
+                    </div>
+                    <div class="nav-item">
+                        <div class="nav-icon"></div>
+                        <div class="nav-label">社区</div>
+                    </div>
+                    <div class="nav-item">
+                        <div class="nav-icon active"></div>
+                        <div class="nav-label active">商城</div>
+                    </div>
+                    <div class="nav-item">
+                        <div class="nav-icon"></div>
+                        <div class="nav-label">我的</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Profile Screen -->
+        <div class="screen-wrapper">
+            <div class="screen-title">个人中心</div>
+            <div class="screen">
+                <div class="status-bar">
+                    <div class="time">12:30</div>
+                    <div class="indicators">
+                        <div class="signal"></div>
+                        <div class="wifi"></div>
+                        <div class="battery"></div>
+                    </div>
+                </div>
+                
+                <div class="profile-header">
+                    <div class="profile-avatar"></div>
+                    <div class="profile-name">低碳达人</div>
+                    <div class="profile-bio">致力于低碳生活的探索者，相信每个人都能为地球做出贡献</div>
+                    
+                    <div class="profile-stats">
+                        <div class="stat-item">
+                            <div class="stat-value">289</div>
+                            <div class="stat-label">碳币</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">42.8</div>
+                            <div class="stat-label">减排总量(kg)</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">12</div>
+                            <div class="stat-label">完成挑战</div>
+                        </div>
+                    </div>
+                    
+                    <div class="button-group">
+                        <div class="button outline">编辑资料</div>
+                        <div class="button">分享碳足迹</div>
+                    </div>
+                </div>
+                
+                <div class="screen-content">
+                    <div class="section profile-badges">
+                        <div class="section-header">
+                            <div class="section-title">我的徽章</div>
+                            <div class="see-all">查看全部</div>
+                        </div>
+                        
+                        <div class="badges-grid">
+                            <div class="badge-item">
+                                <div class="badge-icon badge-icon-1"></div>
+                                <div class="badge-name">低碳先锋</div>
+                            </div>
+                            <div class="badge-item">
+                                <div class="badge-icon badge-icon-2"></div>
+                                <div class="badge-name">绿色出行</div>
+                            </div>
+                            <div class="badge-item">
+                                <div class="badge-icon badge-icon-3"></div>
+                                <div class="badge-name">节水能手</div>
+                            </div>
+                            <div class="badge-item">
+                                <div class="badge-icon badge-icon-4"></div>
+                                <div class="badge-name">回收达人</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="section" style="padding: 0 20px;">
+                        <div class="section-header">
+                            <div class="section-title">区块链碳足迹</div>
+                            <div class="see-all">详情</div>
+                        </div>
+                        
+                        <div class="challenge-card">
+                            <div class="challenge-header">
+                                <div class="challenge-title">碳足迹认证</div>
+                            </div>
+                            <div class="challenge-desc">您的低碳行为已在区块链上被记录和认证，保证数据的真实性和不可篡改性。</div>
+                            <div style="margin-top: 10px; display: flex; justify-content: space-between; align-items: center;">
+                                <div style="font-size: 12px; color: var(--medium-gray);">上次更新: 今天 08:45</div>
+                                <div style="font-size: 12px; color: var(--primary-color); font-weight: 500;">查看证书</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="section" style="padding: 0 20px;">
+                        <div class="section-header">
+                            <div class="section-title">我的活动</div>
+                        </div>
+                        
+                        <div class="activities-list">
+                            <div class="activity-card">
+                                <div class="activity-icon bike-icon"></div>
+                                <div class="activity-title">骑行出行</div>
+                                <div class="activity-carbon">-8.2kg CO₂</div>
+                            </div>
+                            
+                            <div class="activity-card">
+                                <div class="activity-icon recycle-icon"></div>
+                                <div class="activity-title">垃圾分类</div>
+                                <div class="activity-carbon">-3.5kg CO₂</div>
+                            </div>
+                            
+                            <div class="activity-card">
+                                <div class="activity-icon water-icon"></div>
+                                <div class="activity-title">节水节电</div>
+                                <div class="activity-carbon">-4.8kg CO₂</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="section" style="padding: 0 20px 20px;">
+                        <div class="section-header">
+                            <div class="section-title">设置</div>
+                        </div>
+                        
+                        <div style="display: flex; flex-direction: column; gap: 15px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; background-color: var(--white); border-radius: 10px;">
+                                <div style="font-size: 15px; color: var(--dark-gray);">账户与安全</div>
+                                <div style="width: 16px; height: 16px; background-color: var(--medium-gray); border-radius: 50%;"></div>
+                            </div>
+                            
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; background-color: var(--white); border-radius: 10px;">
+                                <div style="font-size: 15px; color: var(--dark-gray);">区块链钱包</div>
+                                <div class="wallet-icon" style="width: 16px; height: 16px; background-color: var(--medium-gray); border-radius: 50%;"></div>
+                            </div>
+                            
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; background-color: var(--white); border-radius: 10px;">
+                                <div style="font-size: 15px; color: var(--dark-gray);">隐私设置</div>
+                                <div style="width: 16px; height: 16px; background-color: var(--medium-gray); border-radius: 50%;"></div>
+                            </div>
+                            
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; background-color: var(--white); border-radius: 10px;">
+                                <div style="font-size: 15px; color: var(--dark-gray);">帮助与反馈</div>
+                                <div style="width: 16px; height: 16px; background-color: var(--medium-gray); border-radius: 50%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="nav-bar">
+                    <div class="nav-item">
+                        <div class="nav-icon"></div>
+                        <div class="nav-label">首页</div>
+                    </div>
+                    <div class="nav-item">
+                        <div class="nav-icon"></div>
+                        <div class="nav-label">活动</div>
+                    </div>
+                    <div class="nav-item">
+                        <div class="nav-icon"></div>
+                        <div class="nav-label">社区</div>
+                    </div>
+                    <div class="nav-item">
+                        <div class="nav-icon"></div>
+                        <div class="nav-label">商城</div>
+                    </div>
+                    <div class="nav-item">
+                        <div class="nav-icon active"></div>
+                        <div class="nav-label active">我的</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Carbon NFT Screen -->
+        <div class="screen-wrapper">
+            <div class="screen-title">碳足迹认证</div>
+            <div class="screen">
+                <div class="status-bar">
+                    <div class="time">12:30</div>
+                    <div class="indicators">
+                        <div class="signal"></div>
+                        <div class="wifi"></div>
+                        <div class="battery"></div>
+                    </div>
+                </div>
+                
+                <div class="header">
+                    <h1>碳足迹认证</h1>
+                    <div style="width: 24px; height: 24px; background-color: var(--medium-gray); border-radius: 50%;"></div>
+                </div>
+                
+                <div class="content">
+                    <div class="crypto-banner">
+                        <div class="crypto-banner-title">区块链碳足迹认证</div>
+                        <div class="crypto-banner-text">您的环保行为已被记录在区块链上，确保数据透明、不可篡改，为您的低碳贡献提供可信证明。</div>
+                        <div class="banner-button">了解更多</div>
+                    </div>
+                    
+                    <div class="section">
+                        <div class="section-header">
+                            <div class="section-title">我的碳足迹NFT</div>
+                            <div class="see-all">全部</div>
+                        </div>
+                        
+                        <div class="nft-grid">
+                            <div class="nft-card">
+                                <div class="nft-image"></div>
+                                <div class="nft-info">
+                                    <div class="nft-title">绿色出行者</div>
+                                    <div class="nft-details">发行日期: 2025-03-01</div>
+                                    <div class="nft-carbon">-12.5kg CO₂</div>
+                                </div>
+                            </div>
+                            
+                            <div class="nft-card">
+                                <div class="nft-image"></div>
+                                <div class="nft-info">
+                                    <div class="nft-title">回收先锋</div>
+                                    <div class="nft-details">发行日期: 2025-02-15</div>
+                                    <div class="nft-carbon">-8.3kg CO₂</div>
+                                </div>
+                            </div>
+                            
+                            <div class="nft-card">
+                                <div class="nft-image"></div>
+                                <div class="nft-info">
+                                    <div class="nft-title">节能达人</div>
+                                    <div class="nft-details">发行日期: 2025-01-28</div>
+                                    <div class="nft-carbon">-15.8kg CO₂</div>
+                                </div>
+                            </div>
+                            
+                            <div class="nft-card">
+                                <div class="nft-image"></div>
+                                <div class="nft-info">
+                                    <div class="nft-title">植树大使</div>
+                                    <div class="nft-details">发行日期: 2025-01-10</div>
+                                    <div class="nft-carbon">-20.2kg CO₂</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="section">
+                        <div class="section-header">
+                            <div class="section-title">碳足迹证书</div>
+                        </div>
+                        
+                        <div class="challenge-card">
+                            <div class="challenge-header">
+                                <div class="challenge-title">低碳生活认证</div>
+                            </div>
+                            <div class="challenge-desc">恭喜您！您已成功减少碳排放42.8kg，相当于种植了2.1棵树。您的低碳行为已在区块链上得到验证和认证。</div>
+                            <div style="background-color: var(--light-gray); border-radius: 8px; padding: 10px; margin-top: 10px;">
+                                <div style="font-size: 12px; color: var(--medium-gray); margin-bottom: 5px;">区块链认证ID</div>
+                                <div style="font-size: 14px; color: var(--dark-gray); word-break: break-all;">0x8Fc5d1A5e7F9578c498FD20eA37738f321672931</div>
+                            </div>
+                            <div style="text-align: center; margin-top: 15px;">
+                                <div class="button">分享我的认证</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="section">
+                        <div class="section-header">
+                            <div class="section-title">低碳贡献排行榜</div>
+                        </div>
+                        
+                        <div style="background-color: var(--white); border-radius: var(--border-radius); padding: 15px; box-shadow: var(--shadow);">
+                            <div style="display: flex; align-items: center; gap: 15px; padding-bottom: 15px; border-bottom: 1px solid var(--light-gray);">
+                                <div style="font-size: 22px; font-weight: 700; color: var(--primary-color);">1</div>
+                                <div class="user-avatar"></div>
+                                <div style="flex: 1;">
+                                    <div style="font-weight: 600; font-size: 16px; color: var(--dark-gray);">绿色先锋</div>
+                                    <div style="font-size: 14px; color: var(--primary-color);">-68.5kg CO₂</div>
+                                </div>
+                                <div class="token-icon" style="width: 24px; height: 24px;"></div>
+                            </div>
+                            
+                            <div style="display: flex; align-items: center; gap: 15px; padding: 15px 0; border-bottom: 1px solid var(--light-gray);">
+                                <div style="font-size: 22px; font-weight: 700; color: var(--medium-gray);">2</div>
+                                <div class="user-avatar"></div>
+                                <div style="flex: 1;">
+                                    <div style="font-weight: 600; font-size: 16px; color: var(--dark-gray);">环保达人</div>
+                                    <div style="font-size: 14px; color: var(--primary-color);">-55.2kg CO₂</div>
+                                </div>
+                            </div>
+                            
+                            <div style="display: flex; align-items: center; gap: 15px; padding: 15px 0; border-bottom: 1px solid var(--light-gray);">
+                                <div style="font-size: 22px; font-weight: 700; color: #CD7F32;">3</div>
+                                <div class="user-avatar"></div>
+                                <div style="flex: 1;">
+                                    <div style="font-weight: 600; font-size: 16px; color: var(--dark-gray);">低碳生活家</div>
+                                    <div style="font-size: 14px; color: var(--primary-color);">-49.7kg CO₂</div>
+                                </div>
+                            </div>
+                            
+                            <div style="display: flex; align-items: center; gap: 15px; padding: 15px 0;">
+                                <div style="font-size: 18px; font-weight: 700; color: var(--primary-color);">8</div>
+                                <div class="profile-avatar" style="width: 40px; height: 40px;"></div>
+                                <div style="flex: 1;">
+                                    <div style="font-weight: 600; font-size: 16px; color: var(--dark-gray);">低碳达人 (您)</div>
+                                    <div style="font-size: 14px; color: var(--primary-color);">-42.8kg CO₂</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="nav-bar">
+                    <div class="nav-item">
+                        <div class="nav-icon"></div>
+                        <div class="nav-label">首页</div>
+                    </div>
+                    <div class="nav-item">
+                        <div class="nav-icon"></div>
+                        <div class="nav-label">活动</div>
+                    </div>
+                    <div class="nav-item">
+                        <div class="nav-icon"></div>
+                        <div class="nav-label">社区</div>
+                    </div>
+                    <div class="nav-item">
+                        <div class="nav-icon"></div>
+                        <div class="nav-label">商城</div>
+                    </div>
+                    <div class="nav-item">
+                        <div class="nav-icon active"></div>
+                        <div class="nav-label active">我的</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
